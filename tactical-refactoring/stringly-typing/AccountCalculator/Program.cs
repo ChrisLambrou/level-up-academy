@@ -11,14 +11,14 @@ namespace AccountCalculator
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
-            {
-                Console.Error.WriteLine("Usage: AccountCalculator.exe <path-to-purchases-file> <currency-code>");
-                Environment.Exit(1);
-            }
-
             try
             {
+                if (args.Length != 2)
+                {
+                    Console.Error.WriteLine("Usage: AccountCalculator.exe <path-to-purchases-file> <currency-code>");
+                    Environment.Exit(1);
+                }
+
                 var purchasesFile = new FileInfo(args[0]);
                 var commonCurrency = args[1];
 
