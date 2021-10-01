@@ -9,19 +9,19 @@ namespace AccountCalculator
     {
         private record ConversionRate(UtcDateTime Start, UtcDateTime End, decimal Rate);
 
-        private readonly Task<ILookup<Currency, ConversionRate>> _conversionRates;
+        private readonly Task<ILookup<string, ConversionRate>> _conversionRates;
 
         public CurrencyConverter(IExchangeRatesProvider exchangeRatesProvider) =>
             _conversionRates = InitializeConversionRates(exchangeRatesProvider);
 
-        private static async Task<ILookup<Currency, ConversionRate>> InitializeConversionRates(
+        private static async Task<ILookup<string, ConversionRate>> InitializeConversionRates(
             IExchangeRatesProvider exchangeRatesProvider) =>
             (await exchangeRatesProvider.GetExchangeRates())
             .OrderBy(x => x.Start)
             .ThenBy(x => x.Currency)
             .ToLookup(x => x.Currency, x => new ConversionRate(x.Start, x.End, x.ConversionRate));
 
-        public Money ConvertCurrency(Money originalMoney, Currency targetCurrency, UtcDateTime timeOfConversion)
+        public Money ConvertCurrency(Money originalMoney, string targetCurrency, UtcDateTime timeOfConversion)
         {
             if (originalMoney.Currency == targetCurrency)
             {
@@ -35,9 +35,9 @@ namespace AccountCalculator
             return new Money(newAmount, targetCurrency);
         }
 
-        private decimal GetConversionRate(Currency currency, UtcDateTime timeOfConversion)
+        private decimal GetConversionRate(string currency, UtcDateTime timeOfConversion)
         {
-            if (currency == new Currency("GBP"))
+            if (currency == "GBP")
             {
                 return 1;
             }

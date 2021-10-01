@@ -32,7 +32,7 @@ namespace AccountCalculator
                 TryParseDate(match.Groups["TIMESTAMP"].Value, out var timestamp);
                 decimal.TryParse(match.Groups["AMOUNT"].Value, out var amount);
                 var description = match.Groups["DESCRIPTION"].Value;
-                var currency = new Currency(match.Groups["CURRENCY"].Value);
+                var currency = match.Groups["CURRENCY"].Value;
                 return new Purchase(timestamp, description, new Money(amount, currency));
             })
             .OrderBy(purchase => purchase.Timestamp)

@@ -20,7 +20,7 @@ namespace AccountCalculator
             try
             {
                 var purchasesFile = new FileInfo(args[0]);
-                var commonCurrency = new Currency(args[1]);
+                var commonCurrency = args[1];
 
                 CalculatePurchases(purchasesFile, commonCurrency, Console.WriteLine, Console.Error.WriteLine).Wait();
             }
@@ -33,7 +33,7 @@ namespace AccountCalculator
 
         private static async Task CalculatePurchases(
             FileInfo purchasesFile,
-            Currency commonCurrency,
+            string commonCurrencyCode,
             Action<string> writeOutput,
             Action<string> writeInfo)
         {
@@ -50,7 +50,7 @@ namespace AccountCalculator
                 .Select(x => new Purchase(
                     x.Timestamp,
                     x.Description,
-                    converter.ConvertCurrency(x.Cost, commonCurrency, x.Timestamp)))
+                    converter.ConvertCurrency(x.Cost, commonCurrencyCode, x.Timestamp)))
                 .ToList();
 
             foreach (var purchase in purchasesInGbp)
@@ -59,7 +59,7 @@ namespace AccountCalculator
             }
 
             var totalCost = purchasesInGbp.Sum(purchase => purchase.Cost.Amount);
-            writeInfo($"Total cost is {new Money(totalCost, commonCurrency)}");
+            writeInfo($"Total cost is {new Money(totalCost, commonCurrencyCode)}");
         }
 
         private static Task<string> DownloadRawExchangeRateData()

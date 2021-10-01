@@ -9,7 +9,7 @@ namespace AccountCalculator.Domain
     /// <param name="Start">The start of the period of time the exchange rate applies.</param>
     /// <param name="End">The end of the period of time the exchange rate applies.</param>
     public record ExchangeRateRecord(
-        Currency Currency,
+        string Currency,
         decimal ConversionRate,
         UtcDateTime Start,
         UtcDateTime End);

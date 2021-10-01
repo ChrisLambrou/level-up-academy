@@ -41,11 +41,11 @@ namespace AccountCalculator
                 .Where(match => TryParseDate(match.Groups["END"].Value, out _))
                 .Select(match =>
                 {
-                    var from = new Currency(match.Groups["CODE"].Value);
+                    var currency = match.Groups["CODE"].Value;
                     var conversionRate = decimal.Parse(match.Groups["RATE"].Value);
                     TryParseDate(match.Groups["START"].Value, out var start);
                     TryParseDate(match.Groups["END"].Value, out var end);
-                    return new ExchangeRateRecord(from, conversionRate, start, end + TimeSpan.FromDays(1));
+                    return new ExchangeRateRecord(currency, conversionRate, start, end + TimeSpan.FromDays(1));
                 })
                 .ToList();
         }
