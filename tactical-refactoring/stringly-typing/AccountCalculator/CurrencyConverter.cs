@@ -1,13 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using AccountCalculator.Domain;
 
 namespace AccountCalculator
 {
     public sealed class CurrencyConverter : ICurrencyConverter
     {
-        private record ConversionRate(UtcDateTime Start, UtcDateTime End, decimal Rate);
+        private record ConversionRate(DateTimeOffset Start, DateTimeOffset End, decimal Rate);
 
         private readonly Task<ILookup<string, ConversionRate>> _conversionRates;
 
@@ -25,7 +24,7 @@ namespace AccountCalculator
             decimal originalValue,
             string originalCurrency,
             string targetCurrency,
-            UtcDateTime timeOfConversion)
+            DateTimeOffset timeOfConversion)
         {
             if (originalCurrency == targetCurrency)
             {
@@ -39,7 +38,7 @@ namespace AccountCalculator
             return newValue;
         }
 
-        private decimal GetConversionRate(string currency, UtcDateTime timeOfConversion)
+        private decimal GetConversionRate(string currency, DateTimeOffset timeOfConversion)
         {
             if (currency == "GBP")
             {

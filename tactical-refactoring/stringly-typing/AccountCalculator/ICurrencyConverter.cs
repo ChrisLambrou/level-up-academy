@@ -1,4 +1,4 @@
-using AccountCalculator.Domain;
+using System;
 
 namespace AccountCalculator
 {
@@ -9,6 +9,6 @@ namespace AccountCalculator
             decimal originalValue,
             string originalCurrency,
             string targetCurrency,
-            UtcDateTime timeOfConversion);
+            DateTimeOffset timeOfConversion);
     }
 }
