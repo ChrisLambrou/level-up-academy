@@ -5,6 +5,10 @@ namespace AccountCalculator
 
     public interface ICurrencyConverter
     {
-        Money ConvertCurrency(Money originalMoney, string targetCurrency, UtcDateTime timeOfConversion);
+        decimal ConvertCurrency(
+            decimal originalValue,
+            string originalCurrency,
+            string targetCurrency,
+            UtcDateTime timeOfConversion);
     }
 }

@@ -21,18 +21,22 @@ namespace AccountCalculator
             .ThenBy(x => x.Currency)
             .ToLookup(x => x.Currency, x => new ConversionRate(x.Start, x.End, x.ConversionRate));
 
-        public Money ConvertCurrency(Money originalMoney, string targetCurrency, UtcDateTime timeOfConversion)
+        public decimal ConvertCurrency(
+            decimal originalValue,
+            string originalCurrency,
+            string targetCurrency,
+            UtcDateTime timeOfConversion)
         {
-            if (originalMoney.Currency == targetCurrency)
+            if (originalCurrency == targetCurrency)
             {
-                return originalMoney; // No conversion required.
+                return originalValue; // No conversion required.
             }
 
-            var rateFromOriginalToGbp = GetConversionRate(originalMoney.Currency, timeOfConversion);
+            var rateFromOriginalToGbp = GetConversionRate(originalCurrency, timeOfConversion);
             var rateFromTargetToGbp = GetConversionRate(targetCurrency, timeOfConversion);
 
-            var newAmount = originalMoney.Amount * (rateFromTargetToGbp / rateFromOriginalToGbp);
-            return new Money(newAmount, targetCurrency);
+            var newValue = originalValue * (rateFromTargetToGbp / rateFromOriginalToGbp);
+            return newValue;
         }
 
         private decimal GetConversionRate(string currency, UtcDateTime timeOfConversion)

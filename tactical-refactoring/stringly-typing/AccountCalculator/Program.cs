@@ -33,7 +33,7 @@ namespace AccountCalculator
 
         private static async Task CalculatePurchases(
             FileInfo purchasesFile,
-            string commonCurrencyCode,
+            string commonCurrency,
             Action<string> writeOutput,
             Action<string> writeInfo)
         {
@@ -50,7 +50,8 @@ namespace AccountCalculator
                 .Select(x => new Purchase(
                     x.Timestamp,
                     x.Description,
-                    converter.ConvertCurrency(x.Cost, commonCurrencyCode, x.Timestamp)))
+                    converter.ConvertCurrency(x.Cost, x.Currency, commonCurrency, x.Timestamp),
+                    commonCurrency))
                 .ToList();
 
             foreach (var purchase in purchasesInGbp)
@@ -58,8 +59,8 @@ namespace AccountCalculator
                 writeOutput($"{purchase.Timestamp:yyyy-MM-ddThh:mm:sszzz},{purchase.Description},{purchase.Cost}");
             }
 
-            var totalCost = purchasesInGbp.Sum(purchase => purchase.Cost.Amount);
-            writeInfo($"Total cost is {new Money(totalCost, commonCurrencyCode)}");
+            var totalCost = purchasesInGbp.Sum(purchase => purchase.Cost);
+            writeInfo($"Total cost is {totalCost:F2} {commonCurrency}");
         }
 
         private static Task<string> DownloadRawExchangeRateData()
