@@ -6,7 +6,7 @@ namespace AccountCalculator
 {
     public sealed class CurrencyConverter : ICurrencyConverter
     {
-        private record ConversionRate(DateTimeOffset Start, DateTimeOffset End, decimal Rate);
+        private record ConversionRate(string Start, string End, decimal Rate);
 
         private readonly Task<ILookup<string, ConversionRate>> _conversionRates;
 
@@ -45,9 +45,12 @@ namespace AccountCalculator
                 return 1;
             }
 
+            var conversionDate = timeOfConversion.UtcDateTime.ToString("yyyy/MM/dd");
+
             var conversionRates = _conversionRates.Result;
             var conversionRate = conversionRates[currency]
-                .FirstOrDefault(x => x.Start <= timeOfConversion && timeOfConversion < x.End);
+                .Where(x => string.CompareOrdinal(x.Start, conversionDate) <= 0)
+                .FirstOrDefault(x => string.CompareOrdinal(conversionDate, x.End) <= 0);
             if (conversionRate == null)
             {
                 throw new ArgumentException(
