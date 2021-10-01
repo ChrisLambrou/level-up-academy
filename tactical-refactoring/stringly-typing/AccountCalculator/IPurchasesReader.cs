@@ -25,11 +25,11 @@ namespace AccountCalculator
             (await ReadRawLines())
             .Select(line => _purchasePattern.Match(line))
             .Where(match => match.Success)
-            .Where(match => TryParseDate(match.Groups["TIMESTAMP"].Value, out _))
+            .Where(match => IsValidDateTime(match.Groups["TIMESTAMP"].Value))
             .Where(match => decimal.TryParse(match.Groups["AMOUNT"].Value, out _))
             .Select(match =>
             {
-                TryParseDate(match.Groups["TIMESTAMP"].Value, out var timestamp);
+                var timestamp = match.Groups["TIMESTAMP"].Value;
                 decimal.TryParse(match.Groups["AMOUNT"].Value, out var amount);
                 var description = match.Groups["DESCRIPTION"].Value;
                 var currency = match.Groups["CURRENCY"].Value;
@@ -39,9 +39,9 @@ namespace AccountCalculator
             .ThenBy(purchase => purchase.Description)
             .ToList();
 
-        private static bool TryParseDate(string s, out DateTimeOffset result)
+        private static bool IsValidDateTime(string s)
         {
-            var success = DateTimeOffset.TryParse(s, null, DateTimeStyles.RoundtripKind, out result);
+            var success = DateTimeOffset.TryParse(s, null, DateTimeStyles.RoundtripKind, out _);
             return success;
         }
 
